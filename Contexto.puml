@@ -1,0 +1,11 @@
+@startuml
+
+actor "Produtor Rural"
+
+rectangle "Sistema Agro" {
+}
+
+"Produtor Rural" --> "Sistema Agro" : Envia peso em kg
+"Sistema Agro" --> "Produtor Rural" : Retorna arrobas
+
+@enduml
