@@ -3,9 +3,14 @@
 actor "Produtor Rural"
 
 rectangle "Sistema Agro" {
+
 }
 
-"Produtor Rural" --> "Sistema Agro" : Envia peso em kg
-"Sistema Agro" --> "Produtor Rural" : Retorna arrobas
+"Produtor Rural" --> "Sistema Agro" : Registra horas de uso da máquina
+"Produtor Rural" --> "Sistema Agro" : Informa consumo de combustível
+
+"Sistema Agro" --> "Produtor Rural" : Mostra custo operacional ($/hora)
+"Sistema Agro" --> "Produtor Rural" : Exibe consumo total de diesel
+"Sistema Agro" --> "Produtor Rural" : Envia alertas de manutenção
 
 @enduml
