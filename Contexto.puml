@@ -10,3 +10,4 @@ rectangle "Sistema Agro" {
 "Sistema Agro" --> "Operador" : Exibe horas registradas
 
 @enduml
+
