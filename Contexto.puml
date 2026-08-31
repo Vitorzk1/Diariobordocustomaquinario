@@ -1,11 +1,20 @@
 @startuml
+left to right direction
+skinparam packageStyle rectangle
 
-actor "Produtor Rural"
+actor "Produtor Rural / Operador" as user
 
-rectangle "Sistema Agro" {
+rectangle "Sistema Diário de Bordo (Custo Maquinário)" {
+  usecase "Registrar Horas de Trabalho" as UC1
+  usecase "Registrar Consumo de Combustível" as UC2
+  usecase "Visualizar Alertas de Manutenção Preventiva" as UC3
+  usecase "Calcular Custo Operacional" as UC4
 }
 
-"Produtor Rural" --> "Sistema Agro" : Envia peso em kg
-"Sistema Agro" --> "Produtor Rural" : Retorna arrobas
+user --> UC1 : Informa horímetro
+user --> UC2 : Informa litros e valor
+user --> UC3 : Recebe notificações
+UC1 ..> UC4 : <<include>>
+UC2 ..> UC4 : <<include>>
 
 @enduml
