@@ -1,0 +1,50 @@
+@startuml couto
+hide circle
+skinparam linetype ortho
+
+title Modelo de Banco de Dados (DER) - Diário de Bordo
+
+entity "Produtor" as produtor {
+  * id : INTEGER <<PK>>
+  --
+  * nome : TEXT
+  * email : TEXT
+  * telefone : TEXT
+}
+
+entity "Operador" as operador {
+  * id : INTEGER <<PK>>
+  --
+  * nome : TEXT
+  * cpf : TEXT
+  * telefone : TEXT
+}
+
+entity "Maquina" as maquina {
+  * id : INTEGER <<PK>>
+  --
+  * id_produtor : INTEGER <<FK>>
+  * modelo : TEXT
+  * marca : TEXT
+  * ano : INTEGER
+  * horimetro_inicial : REAL
+}
+
+entity "RegistroHorimero" as registro {
+  * id : INTEGER <<PK>>
+  --
+  * id_maquina : INTEGER <<FK>>
+  * id_operador : INTEGER <<FK>>
+  * data_registro : DATE
+  * horimetro_anterior : REAL
+  * horimetro_atual : REAL
+  * horas_trabalhadas : REAL
+  * observacoes : TEXT
+}
+
+' Relacionamentos e Cardinalidade
+produtor ||--o{ maquina : "possui (1:N)"
+maquina ||--o{ registro : "recebe (1:N)"
+operador ||--o{ registro : "realiza (1:N)"
+
+@enduml
