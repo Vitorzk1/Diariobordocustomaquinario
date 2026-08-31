@@ -5,7 +5,8 @@ actor "Operador"
 rectangle "Sistema Agro" {
 }
 
-"Operador" --> "Sistema Agro" : Registra horas de trabalho
-"Sistema Agro" --> "Operador" : Retorna horas registradas
+"Operador" --> "Sistema Agro" : Registra máquina
+"Operador" --> "Sistema Agro" : Informa horas trabalhadas
+"Sistema Agro" --> "Operador" : Exibe horas registradas
 
 @enduml
