@@ -1,4 +1,4 @@
-@startuml
+@startuml couto
 autonumber
 actor "Usuário" as user
 participant "Sistema Agro" as sys

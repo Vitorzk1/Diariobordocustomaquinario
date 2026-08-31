@@ -1,0 +1,21 @@
+@startuml couto
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+SHOW_PERSON_OUTLINE()
+
+title Diagrama de Contêiner (C4 - Nível 2) - Diário de Bordo (Sistema Agro)
+
+Person(operador, "Operador / Produtor Rural", "Usuário responsável por cadastrar máquinas e lançar horas de trabalho.")
+
+System_Boundary(sistema_agro, "Sistema Diário de Bordo") {
+    Container(web_app, "Interface Web", "HTML5, CSS3, JavaScript", "Telas do sistema para seleção de máquinas, formulários de horímetro e exibição de relatórios.")
+    Container(backend, "Servidor Backend", "Python / Flask", "Processa as requisições HTTP, executa a lógica de negócios e valida lançamentos do horímetro.")
+    ContainerDb(database, "Banco de Dados", "SQLite / Relacional", "Armazena o cadastro de máquinas, histórico de horas trabalhadas e totais acumulados.")
+}
+
+' Relacionamentos
+Rel(operador, web_app, "Acessa e preenche formulários", "HTTP / Navegador")
+Rel(web_app, backend, "Envia dados e solicita relatórios", "JSON / HTTP POST & GET")
+Rel(backend, database, "Lê e grava registros de máquinas e horímetro", "SQL / SQLAlchemy")
+
+@enduml
