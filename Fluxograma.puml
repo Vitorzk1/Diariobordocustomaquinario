@@ -1,0 +1,37 @@
+@startuml
+title Fluxograma de Processo do Agro - Diário de Bordo (Geral)
+
+start
+:Operador / Produtor acessa a aplicação web;
+:Seleciona a funcionalidade desejada;
+
+if (Selecione a Ação) then (Registrar Horas)
+  :Entrada: Máquina, Operador, Horímetro Inicial e Final;
+  if (Horímetro Final >= Horímetro Inicial?) then (Sim)
+    :Calcula Horas Trabalhadas:
+    (Horímetro Final - Horímetro Inicial);
+    :Calcula Custo Operacional:
+    (Horas Trabalhadas * Custo por Hora);
+    :Salva Registro de Horas no Banco;
+  else (Não)
+    :Exibe erro: "Horímetro final menor que o inicial";
+    stop
+  endif
+
+elseif (Selecione a Ação) then (Registrar Combustível)
+  :Entrada: Máquina, Litros Abastecidos e Valor (R$);
+  :Calcula Média de Eficiência (L/h);
+  :Salva Abastecimento no Banco;
+
+else (Manutenção Preventiva)
+  :Consulta Horas Acumuladas da Máquina;
+  if (Horas Acumuladas >= Limite de Manutenção?) then (Sim)
+    :Gera Alerta de Manutenção Preventiva;
+  else (Não)
+    :Status: Manutenção em Dia;
+  endif
+endif
+
+:Exibe resumo atualizado no Dashboard do Usuário;
+stop
+@enduml
