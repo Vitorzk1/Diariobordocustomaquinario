@@ -1,11 +1,18 @@
 @startuml
+autonumber
+actor "Usuário" as user
+participant "Sistema Agro" as sys
+database "Banco de Dados" as db
 
-actor "Produtor Rural"
+user -> sys : Seleciona a máquina
+sys -> db : Busca dados da máquina e último horímetro
+db --> sys : Retorna dados
+sys --> user : Exibe formulário com horímetro atual
 
-rectangle "Sistema Agro" {
-}
+user -> sys : Informa horas trabalhadas no dia (horímetro atual)
+sys -> db : Salva registro diário e atualiza total acumulado
+db --> sys : Confirmação de salvamento
 
-"Produtor Rural" --> "Sistema Agro" : Envia peso em kg
-"Sistema Agro" --> "Produtor Rural" : Retorna arrobas
+sys --> user : Exibe confirmação e total de horas acumuladas
 
 @enduml
