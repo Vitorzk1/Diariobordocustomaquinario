@@ -1,0 +1,50 @@
+@startuml
+' Configurações visuais do diagrama
+hide circle
+skinparam linetype ortho
+
+entity "OPERADOR" as operador {
+  * id_operador : INT <<PK>>
+  --
+  * nome : VARCHAR(100)
+  * cpf : VARCHAR(14)
+  * cargo : VARCHAR(50)
+}
+
+entity "MAQUINARIO" as maquinario {
+  * id_maquinario : INT <<PK>>
+  --
+  * nome : VARCHAR(100)
+  * modelo : VARCHAR(50)
+  * marca : VARCHAR(50)
+  * ano : INT
+  * horas_iniciais : DECIMAL(10,2)
+}
+
+entity "DIARIO_BORDO" as diario {
+  * id_diario : INT <<PK>>
+  --
+  * id_maquinario : INT <<FK>>
+  * id_operador : INT <<FK>>
+  * data_registro : DATE
+  * horametro_inicial : DECIMAL(10,2)
+  * horametro_final : DECIMAL(10,2)
+  * atividade : TEXT
+}
+
+entity "CUSTO_MANUTENCAO" as custo {
+  * id_custo : INT <<PK>>
+  --
+  * id_maquinario : INT <<FK>>
+  * data_custo : DATE
+  * tipo_custo : VARCHAR(50)  ' Ex: Combustível, Peça, Manutenção
+  * valor_total : DECIMAL(10,2)
+  * descricao : TEXT
+}
+
+' Relacionamentos entre as tabelas
+operador ||--o{ diario : "registra"
+maquinario ||--o{ diario : "utilizado em"
+maquinario ||--o{ custo : "gera"
+
+@enduml
