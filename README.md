@@ -49,40 +49,6 @@ No agronegócio moderno, a gestão eficiente do maquinário é um fator determin
 
 ---
 
-## 📐 Modelagem do Sistema (UML)
-
-### Diagrama de Casos de Uso
-Representa as interações dos atores (**Produtor Rural** e **Operador**) com o sistema:
-
-```plantuml
-@startuml
-left to right direction
-
-skinparam packageStyle rectangle
-skinparam actorStyle hollow
-
-actor "Produtor Rural" as produtor
-actor "Operador" as operador
-
-rectangle "Diário de Bordo - Sistema Agro" {
-  usecase "Cadastrar Máquina" as UC1
-  usecase "Registrar Horas Trabalhadas (Horímetro)" as UC2
-  usecase "Registrar Abastecimento" as UC3
-  usecase "Agendar Manutenção Preventiva" as UC4
-  usecase "Consultar Relatório de Horas e Custos" as UC5
-}
-
-produtor --> UC1
-produtor --> UC4
-produtor --> UC5
-
-operador --> UC2
-operador --> UC3
-produtor --> UC2
-@enduml
-```
-
----
 
 ## 🧪 Casos de Teste & Qualidade
 
@@ -94,15 +60,6 @@ Para garantir a confiabilidade do sistema, a aplicação conta com cenários de 
 | **CT-02** | Registro Diário de Horas | Selecionar máquina e lançar horímetro atual | Registro gravado e total atualizado |
 | **CT-03** | Cálculo de Horas Acumuladas | Consultar painel da máquina | Soma automática de todos os registros diários |
 | **CT-04** | Validação de Entrada | Inserir valores de horas negativos ou texto | Bloqueio imediato com aviso de erro |
-
----
-
-## 🛠️ Arquitetura & Tecnologias
-
-- **Backend:** Node.js / Express
-- **Banco de Dados:** SQLite
-- **Modelagem:** PlantUML / UML 2.0
-- **Documentação & Testes:** BDD / Gherkin & Markdown
 
 ---
 
