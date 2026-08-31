@@ -1,20 +1,21 @@
-@startuml
-left to right direction
-skinparam packageStyle rectangle
+@startuml container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-actor "Produtor Rural / Operador" as user
+TITLE Diagrama de Contêiner - Sistema AgroCost Pro (C4 Nível 2)
 
-rectangle "Sistema Diário de Bordo (Custo Maquinário)" {
-  usecase "Registrar Horas de Trabalho" as UC1
-  usecase "Registrar Consumo de Combustível" as UC2
-  usecase "Visualizar Alertas de Manutenção Preventiva" as UC3
-  usecase "Calcular Custo Operacional" as UC4
+Person(usuario, "Produtor / Gestor Agrícola", "Acessa o sistema para controlar custos e revisões.")
+
+System_Boundary(agroSystem, "Sistema de Custos Agrícolas") {
+    Container(webApp, "Aplicação Web (Frontend)", "React / Tailwind CSS", "Interface interativa para visualização de dashboards, cadastro de máquinas e gerenciamento de revisões.")
+    Container(backendApi, "API REST (Backend)", "Python / Flask", "Processa regras de negócio, cálculo do custo por hora e lógica dos alertas do horímetro.")
+    ContainerDb(database, "Banco de Dados", "SQLite / PostgreSQL", "Armazena dados de máquinas, horímetros, histórico de consumo e registros de manutenção.")
 }
 
-user --> UC1 : Informa horímetro
-user --> UC2 : Informa litros e valor
-user --> UC3 : Recebe notificações
-UC1 ..> UC4 : <<include>>
-UC2 ..> UC4 : <<include>>
+System_Ext(apiDiesel, "API Externa de Combustível", "Fornece preços médios regionais do óleo diesel.")
+
+Rel(usuario, webApp, "Utiliza a interface do usuário", "HTTPS")
+Rel(webApp, backendApi, "Faz chamadas de API (CRUD e Cálculos)", "JSON/HTTPS")
+Rel(backendApi, database, "Lê e escreve dados de máquinas e manutenções", "SQL/SQLAlchemy")
+Rel(backendApi, apiDiesel, "Consulta cotação do combustível", "REST/JSON")
 
 @enduml
