@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Registro de Horas</title>
 
 ```
+<title>Registro de Horas</title>
+
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 ```
 
@@ -15,103 +17,229 @@
 <body>
 
 ```
+<header class="topo">
+
+    <div>
+        <h1>Registro de Horas</h1>
+        <p>Controle de utilização das máquinas agrícolas</p>
+    </div>
+
+    <a href="{{ url_for('sair') }}" class="btn-sair">
+        Sair
+    </a>
+
+</header>
+
+
 <main class="container">
 
-    <h1>Registro de Horas das Máquinas</h1>
+    <section class="card">
 
-    <form method="POST">
+        <h2>Novo registro</h2>
 
-        <label for="maquina">Máquina:</label>
+        <form method="POST">
 
-        <select id="maquina" name="maquina" required>
-            <option value="">Selecione uma máquina</option>
-            <option value="Trator">Trator</option>
-            <option value="Colheitadeira">Colheitadeira</option>
-            <option value="Plantadeira">Plantadeira</option>
-        </select>
+            <div class="campo">
 
+                <label for="maquina">
+                    Máquina
+                </label>
 
-        <label for="data">Data:</label>
+                <select id="maquina" name="maquina" required>
 
-        <input
-            type="date"
-            id="data"
-            name="data"
-            required
-        >
+                    <option value="">
+                        Selecione uma máquina
+                    </option>
 
+                    <option value="Trator">
+                        Trator
+                    </option>
 
-        <label for="horas">Horas trabalhadas:</label>
+                    <option value="Colheitadeira">
+                        Colheitadeira
+                    </option>
 
-        <input
-            type="number"
-            id="horas"
-            name="horas"
-            min="1"
-            step="0.5"
-            placeholder="Ex: 5.5"
-            required
-        >
+                    <option value="Plantadeira">
+                        Plantadeira
+                    </option>
+
+                </select>
+
+            </div>
 
 
-        <label for="descricao">Descrição:</label>
+            <div class="campo">
 
-        <input
-            type="text"
-            id="descricao"
-            name="descricao"
-            placeholder="Ex: Preparação do solo"
-            required
-        >
+                <label for="data">
+                    Data
+                </label>
 
+                <input
+                    type="date"
+                    id="data"
+                    name="data"
+                    required
+                >
 
-        <button type="submit">
-            Registrar horas
-        </button>
-
-    </form>
+            </div>
 
 
-    <h2>Registros realizados</h2>
+            <div class="campo">
 
-    {% if registros %}
+                <label for="horas">
+                    Horas trabalhadas
+                </label>
 
-    <table>
+                <input
+                    type="number"
+                    id="horas"
+                    name="horas"
+                    min="0.5"
+                    step="0.5"
+                    placeholder="Ex: 5.5"
+                    required
+                >
 
-        <thead>
-            <tr>
-                <th>Máquina</th>
-                <th>Data</th>
-                <th>Horas</th>
-                <th>Descrição</th>
-            </tr>
-        </thead>
+            </div>
 
-        <tbody>
 
-            {% for registro in registros %}
+            <div class="campo">
 
-            <tr>
-                <td>{{ registro.maquina }}</td>
-                <td>{{ registro.data }}</td>
-                <td>{{ registro.horas }}h</td>
-                <td>{{ registro.descricao }}</td>
-            </tr>
+                <label for="descricao">
+                    Descrição
+                </label>
 
-            {% endfor %}
+                <input
+                    type="text"
+                    id="descricao"
+                    name="descricao"
+                    placeholder="Ex: Preparação do solo"
+                    required
+                >
 
-        </tbody>
+            </div>
 
-    </table>
 
-    {% else %}
+            <button type="submit" class="btn-registrar">
+                Registrar horas
+            </button>
 
-    <p>Nenhum registro realizado ainda.</p>
+        </form>
 
-    {% endif %}
+    </section>
+
+
+    <section class="card">
+
+        <div class="titulo-registros">
+
+            <div>
+                <h2>Registros realizados</h2>
+
+                <p>
+                    Confira os registros das máquinas.
+                </p>
+            </div>
+
+            <span class="contador">
+                {{ registros|length }} registro(s)
+            </span>
+
+        </div>
+
+
+        {% if registros %}
+
+        <div class="tabela-container">
+
+            <table>
+
+                <thead>
+
+                    <tr>
+                        <th>Máquina</th>
+                        <th>Data</th>
+                        <th>Horas</th>
+                        <th>Descrição</th>
+                        <th>Ação</th>
+                    </tr>
+
+                </thead>
+
+
+                <tbody>
+
+                    {% for registro in registros %}
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                {{ registro.maquina }}
+                            </strong>
+                        </td>
+
+                        <td>
+                            {{ registro.data }}
+                        </td>
+
+                        <td>
+                            {{ registro.horas }}h
+                        </td>
+
+                        <td>
+                            {{ registro.descricao }}
+                        </td>
+
+                        <td>
+
+                            <form
+                                method="POST"
+                                action="{{ url_for('excluir', index=loop.index0) }}"
+                                onsubmit="return confirm('Tem certeza que deseja excluir este registro?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn-excluir"
+                                >
+                                    Excluir
+                                </button>
+
+                            </form>
+
+                        </td>
+
+                    </tr>
+
+                    {% endfor %}
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+        {% else %}
+
+        <div class="sem-registros">
+
+            <h3>Nenhum registro encontrado</h3>
+
+            <p>
+                Cadastre as horas trabalhadas de uma máquina
+                para começar.
+            </p>
+
+        </div>
+
+        {% endif %}
+
+    </section>
 
 </main>
 ```
 
 </body>
+
 </html>

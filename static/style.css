@@ -1,50 +1,201 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  }
+
 body {
-    font-family: Arial, sans-serif;
-    background: #f2f2f2;
-    margin: 0;
-    padding: 40px;
+font-family: Arial, Helvetica, sans-serif;
+background: #f4f6f8;
+color: #1f2937;
+}
+
+.topo {
+background: #1f2937;
+color: white;
+padding: 20px 7%;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.topo h1 {
+font-size: 25px;
+margin-bottom: 5px;
+}
+
+.topo p {
+color: #cbd5e1;
+font-size: 14px;
+}
+
+.btn-sair {
+background: #dc2626;
+color: white;
+text-decoration: none;
+padding: 10px 18px;
+border-radius: 7px;
+font-weight: bold;
+}
+
+.btn-sair:hover {
+background: #b91c1c;
 }
 
 .container {
-    max-width: 900px;
-    margin: auto;
-    background: white;
-    padding: 30px;
-    border-radius: 10px;
+width: 90%;
+max-width: 1100px;
+margin: 30px auto;
 }
 
-h1, h2 {
-    text-align: center;
+.card {
+background: white;
+padding: 25px;
+margin-bottom: 25px;
+border-radius: 12px;
+box-shadow: 0 3px 12px rgba(0, 0, 0, 0.08);
 }
 
-form {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 30px;
+.card h2 {
+margin-bottom: 8px;
 }
 
-input, select, button {
-    padding: 10px;
-    font-size: 16px;
+.campo {
+margin-top: 18px;
 }
 
-button {
-    margin-top: 10px;
-    cursor: pointer;
+.campo label {
+display: block;
+font-weight: bold;
+margin-bottom: 7px;
+}
+
+.campo input,
+.campo select {
+width: 100%;
+padding: 12px;
+border: 1px solid #d1d5db;
+border-radius: 7px;
+font-size: 15px;
+}
+
+.campo input:focus,
+.campo select:focus {
+outline: none;
+border-color: #2563eb;
+}
+
+.btn-registrar {
+width: 100%;
+margin-top: 22px;
+padding: 13px;
+border: none;
+border-radius: 7px;
+background: #2563eb;
+color: white;
+font-size: 16px;
+font-weight: bold;
+cursor: pointer;
+}
+
+.btn-registrar:hover {
+background: #1d4ed8;
+}
+
+.titulo-registros {
+display: flex;
+justify-content: space-between;
+align-items: center;
+margin-bottom: 20px;
+}
+
+.titulo-registros p {
+color: #6b7280;
+margin-top: 5px;
+}
+
+.contador {
+background: #e0e7ff;
+color: #3730a3;
+padding: 8px 12px;
+border-radius: 20px;
+font-size: 13px;
+font-weight: bold;
+}
+
+.tabela-container {
+overflow-x: auto;
 }
 
 table {
-    width: 100%;
-    border-collapse: collapse;
+width: 100%;
+border-collapse: collapse;
 }
 
-th, td {
+th {
+background: #f3f4f6;
+text-align: left;
+padding: 13px;
+}
+
+td {
+padding: 13px;
+border-top: 1px solid #e5e7eb;
+}
+
+.btn-excluir {
+background: #dc2626;
+color: white;
+border: none;
+padding: 8px 12px;
+border-radius: 6px;
+cursor: pointer;
+font-weight: bold;
+}
+
+.btn-excluir:hover {
+background: #b91c1c;
+}
+
+.sem-registros {
+text-align: center;
+padding: 35px;
+color: #6b7280;
+}
+
+.sem-registros h3 {
+color: #374151;
+margin-bottom: 8px;
+}
+
+@media (max-width: 700px) {
+
+
+.topo {
+    padding: 18px;
+}
+
+.topo h1 {
+    font-size: 20px;
+}
+
+.container {
+    width: 94%;
+    margin: 20px auto;
+}
+
+.card {
+    padding: 18px;
+}
+
+.titulo-registros {
+    align-items: flex-start;
+    gap: 10px;
+    flex-direction: column;
+}
+
+th,
+td {
     padding: 10px;
-    border: 1px solid #ccc;
-    text-align: center;
-}
-
-p {
-    text-align: center;
-}
+    font-size: 13px;
+}}
