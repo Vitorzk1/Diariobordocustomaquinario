@@ -1,106 +1,45 @@
-:root {
-    --bg-color: #0f172a;
-    --card-bg: #1e293b;
-    --text-primary: #f8fafc;
-    --text-muted: #94a3b8;
-    --border-color: #334155;
-    --emerald: #10b981;
-    --amber: #f59e0b;
-    --danger: #ef4444;
-    --sky: #38bdf8;
+/* KPIs Header */
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
 }
 
-body {
-    background-color: var(--bg-color);
-    color: var(--text-primary);
-    font-family: system-ui, -apple-system, sans-serif;
-    margin: 0;
-    padding: 2rem;
-}
-
-.card-table {
+.kpi-card {
     background: var(--card-bg);
+    padding: 1rem;
     border-radius: 8px;
     border: 1px solid var(--border-color);
-    overflow: hidden;
-    margin: 2rem 0;
+    display: flex;
+    flex-direction: column;
 }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    text-align: left;
-}
-
-th, td {
-    padding: 1rem;
-    border-bottom: 1px solid var(--border-color);
-}
-
-th {
-    background-color: rgba(0, 0, 0, 0.2);
+.kpi-title {
+    font-size: 0.8rem;
     color: var(--text-muted);
 }
 
-.text-muted { color: var(--text-muted); }
-.text-emerald { color: var(--emerald); }
-.text-warning { color: var(--amber); }
-.text-danger { color: var(--danger); }
-.text-sky { color: var(--sky); }
-.font-bold { font-weight: bold; }
-.font-mono { font-family: monospace; }
-
-.progress-container {
-    width: 100%;
-    background-color: #0f172a;
-    height: 8px;
-    border-radius: 4px;
-    margin-top: 6px;
-    overflow: hidden;
+.kpi-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 0.25rem;
 }
 
-.progress-bar {
-    height: 100%;
+/* Badges de Status */
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
     border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
 }
 
-.bar-emerald { background-color: var(--emerald); }
-.bar-amber { background-color: var(--amber); }
-.bar-danger { background-color: var(--danger); }
+.badge-danger { background-color: rgba(239, 68, 68, 0.2); color: var(--danger); }
+.badge-warning { background-color: rgba(245, 158, 11, 0.2); color: var(--amber); }
+.badge-success { background-color: rgba(16, 185, 129, 0.2); color: var(--emerald); }
 
-.action-buttons {
+.machine-info {
     display: flex;
-    gap: 0.5rem;
-}
-
-.btn {
-    border: none;
-    padding: 0.4rem 0.8rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.btn-outline {
-    background: transparent;
-    border: 1px solid var(--border-color);
-    color: var(--text-primary);
-}
-
-.btn-success {
-    background-color: var(--emerald);
-    color: #000;
-}
-
-.checklist-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1.5rem;
-}
-
-.checklist-card {
-    background: var(--card-bg);
-    padding: 1.25rem;
-    border-radius: 8px;
-    border: 1px solid var(--border-color);
+    flex-direction: column;
 }
