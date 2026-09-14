@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Controle de Combustível</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="user-bar">
+            <span>
+                Usuário: <strong>{{ usuario.nome }}</strong> | Cargo: 
+                <strong>
+                    {% if usuario.perfil == 'admin' %}
+                        🛡️ Administrador
+                    {% elif usuario.perfil == 'supervisor' %}
+                        📋 Supervisor
+                    {% else %}
+                        🚜 Operador
+                    {% endif %}
+                </strong>
+            </span>
+            <div>
+                {% if usuario.perfil == 'admin' %}
+                    <a href="/admin/permissoes" class="btn">Gerenciar Usuários</a>
+                {% endif %}
+                <a href="/logout" class="link-logout">Sair</a>
+            </div>
+        </div>
+
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <h1>⛽ Registro de Consumo de Combustível</h1>
+        
+        <a href="/abastecimento" class="btn">+ Registrar Novo Abastecimento</a>
+        
+        <h2>Histórico de Abastecimentos</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Maquinário</th>
+                    <th>Litros</th>
+                    <th>Horas</th>
+                    <th>Média</th>
+                    <th>Custo Total</th>
+                    {% if usuario.perfil in ['supervisor', 'admin'] %}
+                    <th>Ações</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in registros %}
+                <tr>
+                    <td>{{ item.maquina }}</td>
+                    <td>{{ item.litros }} L</td>
+                    <td>{{ item.horas_trabalhadas }} h</td>
+                    <td><strong>{{ item.consumo_medio }} L/h</strong></td>
+                    <td>R$ {{ item.valor_total }}</td>
+                    {% if usuario.perfil in ['supervisor', 'admin'] %}
+                    <td>
+                        <form action="/deletar/{{ item.id }}" method="POST" style="display:inline;">
+                            <button type="submit" class="btn-danger" onclick="return confirm('Deseja realmente excluir este registro?')">Excluir</button>
+                        </form>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Novo Abastecimento</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>⛽ Novo Registro de Abastecimento</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form action="/abastecimento" method="POST">
+            <label for="maquina">Máquina Agrícola:</label>
+            <select id="maquina" name="maquina" required>
+                <option value="Trator John Deere 6115J">Trator John Deere 6115J</option>
+                <option value="Colheitadeira S680">Colheitadeira S680</option>
+                <option value="Pulverizador MF 9330">Pulverizador MF 9330</option>
+            </select>
+
+            <label for="litros">Litros Abastecidos (L):</label>
+            <input type="number" step="0.1" id="litros" name="litros" placeholder="Ex: 150.5" required>
+
+            <label for="horas">Horas Trabalhadas no Período:</label>
+            <input type="number" step="0.1" id="horas" name="horas" placeholder="Ex: 8.5" required>
+
+            <label for="valor_litro">Preço por Litro (R$):</label>
+            <input type="number" step="0.01" id="valor_litro" name="valor_litro" placeholder="Ex: 6.00" required>
+
+            <button type="submit" class="btn">Salvar Registro</button>
+            <a href="/" class="link-voltar">Cancelar</a>
+        </form>
+    </div>
+</body>
+</html>

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Gerenciamento de Usuários</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>⚙️ Gerenciamento de Usuários e Níveis de Acesso</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+            {% for category, message in messages %}
+              <div class="alert {{ category }}">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <a href="/" class="link-voltar">← Voltar ao Painel Principal</a>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Perfil Atual</th>
+                    <th>Alterar Nível</th>
+                    <th>Ação Excluir</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in usuarios %}
+                <tr>
+                    <td>{{ u.nome }}</td>
+                    <td>{{ u.email }}</td>
+                    <td>
+                        <strong>
+                            {% if u.perfil == 'admin' %}
+                                🛡️ Administrador
+                            {% elif u.perfil == 'supervisor' %}
+                                📋 Supervisor
+                            {% else %}
+                                🚜 Operador (Comum)
+                            {% endif %}
+                        </strong>
+                    </td>
+                    <td>
+                        <form action="/admin/alterar-perfil/{{ u.id }}" method="POST" style="display:flex; gap:5px;">
+                            <select name="novo_perfil">
+                                <option value="comum" {% if u.perfil == 'comum' %}selected{% endif %}>Operador (Só Registra)</option>
+                                <option value="supervisor" {% if u.perfil == 'supervisor' %}selected{% endif %}>Supervisor (Registra e Exclui)</option>
+                                <option value="admin" {% if u.perfil == 'admin' %}selected{% endif %}>Administrador (Acesso Total)</option>
+                            </select>
+                            <button type="submit" class="btn">Salvar</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form action="/admin/excluir-usuario/{{ u.id }}" method="POST">
+                            <button type="submit" class="btn-danger" onclick="return confirm('Tem certeza de que deseja excluir permanentemente esta conta?')">Excluir Conta</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
