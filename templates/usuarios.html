@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gerenciar Usuários - Diário de Bordo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="topo">
+    <div class="brand">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+          <circle cx="9" cy="7" r="4"/>
+          <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+          <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Gerenciamento de Usuários</h1>
+        <p>Painel Administrativo</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="{{ url_for('dashboard') }}" class="btn-nav">Painel Admin</a>
+      <a href="{{ url_for('registro_horas') }}" class="btn-nav">Registros</a>
+      <a href="{{ url_for('logout') }}" class="btn-sair">Sair</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <div class="titulo-registros" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h2>Lista de Usuários</h2>
+          <p>Altere as permissões ou remova contas de acesso</p>
+        </div>
+      </div>
+
+      <div class="tabela-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Nome</th>
+              <th>E-mail</th>
+              <th>Perfil Atual</th>
+              <th class="text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in usuarios %}
+              <tr>
+                <td><strong>{{ u.nome }}</strong></td>
+                <td>{{ u.email }}</td>
+                <td>
+                  <span class="badge-maquina">{{ u.perfil|upper }}</span>
+                </td>
+                <td class="text-right" style="display: flex; gap: 8px; justify-content: flex-end;">
+                  {% if u.id != current_user.id %}
+                    <!-- Formulário para alterar perfil -->
+                    <form action="{{ url_for('alterar_perfil', user_id=u.id) }}" method="POST">
+                      <input type="hidden" name="perfil" value="usuario" {% if u.perfil == 'admin' %}checked{% endif %}>
+                      <button type="submit" name="perfil" value="{% if u.perfil == 'admin' %}usuario{% else %}admin{% endif %}" class="btn-primary" style="padding: 6px 12px; font-size: 0.85rem;">
+                        Tornar {% if u.perfil == 'admin' %}Usuário{% else %}Admin{% endif %}
+                      </button>
+                    </form>
+
+                    <!-- Formulário para deletar usuário -->
+                    <form action="{{ url_for('deletar_usuario', user_id=u.id) }}" method="POST" onsubmit="return confirm('Tem certeza que deseja excluir este usuário e todos os seus registros?');">
+                      <button type="submit" class="btn-sair" style="padding: 6px 12px; font-size: 0.85rem;">Excluir</button>
+                    </form>
+                  {% else %}
+                    <span style="color: var(--text-muted); font-size: 0.85rem;">(Sua conta)</span>
+                  {% endif %}
+                </td>
+              </tr>
+            {% else %}
+              <tr>
+                <td colspan="4" class="tabela-vazia">Nenhum usuário cadastrado.</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

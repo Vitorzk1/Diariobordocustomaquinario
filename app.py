@@ -27,19 +27,28 @@ login_manager.login_message = "Faça login para acessar essa página."
 login_manager.login_message_category = "warning"
 
 #===========================================================
-#                         MODELS
+#                      MODELS
 #===========================================================
 
 class User(UserMixin, db.Model):
+    __tablename__ = "user"
+    
     id = db.Column(db.Integer, primary_key=True)
     nome = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
-    senha = db.Column(db.String(120), nullable=False)
+    senha = db.Column(db.String(255), nullable=False)
     perfil = db.Column(db.String(20), nullable=False, default="usuario")
     
-    registros = db.relationship('RegistroMaquina', backref='usuario', lazy=True)
+    registros = db.relationship(
+        'RegistroMaquina', 
+        backref='usuario', 
+        lazy=True, 
+        cascade="all, delete-orphan"
+    )
 
 class RegistroMaquina(db.Model):
+    __tablename__ = "registro_maquina"
+    
     id = db.Column(db.Integer, primary_key=True)
     maquina = db.Column(db.String(100), nullable=False)
     data = db.Column(db.String(20), nullable=False)
@@ -52,7 +61,7 @@ def carregar_usuario(user_id):
     return db.session.get(User, int(user_id))
 
 #===========================================================
-#                       DECORATORS
+#                      DECORATORS
 #===========================================================
 
 def admin_required(func):
@@ -65,7 +74,7 @@ def admin_required(func):
     return wrapper
 
 #===========================================================
-#                 ROTAS DE AUTENTICAÇÃO
+#                ROTAS DE AUTENTICAÇÃO
 #===========================================================
 
 @app.route("/")
@@ -80,20 +89,20 @@ def cadastro():
         return redirect(url_for("registro_horas"))
 
     if request.method == "POST":
-        nome = request.form["nome"]
-        email = request.form["email"]
-        senha = request.form["senha"]
+        nome = request.form.get("nome", "").strip()
+        email = request.form.get("email", "").strip().lower()
+        senha = request.form.get("senha", "")
         perfil = request.form.get("perfil", "usuario")
 
         usuario_existente = User.query.filter_by(email=email).first()
         if usuario_existente:
-            flash("Email já cadastrado. Faça login.", "danger")
+            flash("E-mail já cadastrado. Faça login.", "danger")
             return redirect(url_for("login"))
 
         novo_usuario = User(
             nome=nome,
             email=email,
-            senha=generate_password_hash(senha),
+            senha=generate_password_hash(senha, method='scrypt'),
             perfil=perfil
         )
         db.session.add(novo_usuario)
@@ -110,8 +119,8 @@ def login():
         return redirect(url_for("registro_horas"))
 
     if request.method == "POST":
-        email = request.form["email"]
-        senha = request.form["senha"]
+        email = request.form.get("email", "").strip().lower()
+        senha = request.form.get("senha", "")
 
         usuario = User.query.filter_by(email=email).first()
 
@@ -119,8 +128,8 @@ def login():
             login_user(usuario)
             flash("Login realizado com sucesso!", "success")
             return redirect(url_for("registro_horas"))
-        else:
-            flash("Email ou senha incorretos.", "danger")
+        
+        flash("E-mail ou senha incorretos.", "danger")
 
     return render_template("login.html")
 
@@ -137,22 +146,22 @@ def perfil():
     return render_template("perfil.html", usuario=current_user)
 
 #===========================================================
-#             REGISTRO DE MÁQUINAS (SISTEMA)
+#            REGISTRO DE MÁQUINAS (SISTEMA)
 #===========================================================
 
 @app.route("/registro-horas", methods=["GET", "POST"])
 @login_required
 def registro_horas():
     if request.method == "POST":
-        maquina = request.form["maquina"]
-        data_raw = request.form["data"]
-        horas = request.form["horas"]
-        descricao = request.form["descricao"]
+        maquina = request.form.get("maquina", "").strip()
+        data_raw = request.form.get("data", "")
+        horas = request.form.get("horas", "").strip()
+        descricao = request.form.get("descricao", "").strip()
 
-        if data_raw:
+        try:
             data_formatada = datetime.strptime(data_raw, "%Y-%m-%d").strftime("%d/%m/%Y")
-        else:
-            data_formatada = ""
+        except ValueError:
+            data_formatada = data_raw
 
         novo_registro = RegistroMaquina(
             maquina=maquina,
@@ -177,7 +186,7 @@ def registro_horas():
 @app.route("/excluir/<int:id>", methods=["POST"])
 @login_required
 def excluir(id):
-    registro = RegistroMaquina.query.get_or_404(id)
+    registro = db.get_or_404(RegistroMaquina, id)
     
     if current_user.perfil == "admin" or registro.user_id == current_user.id:
         db.session.delete(registro)
@@ -211,33 +220,43 @@ def usuarios():
     lista_usuarios = User.query.all()
     return render_template("usuarios.html", usuarios=lista_usuarios)
 
-@app.route("/admin/alterar_perfil/<int:user_id>", methods=["GET", "POST"])
+@app.route("/admin/alterar_perfil/<int:user_id>", methods=["POST"])
 @login_required
 @admin_required
 def alterar_perfil(user_id):
-    usuario = User.query.get_or_404(user_id)
+    usuario = db.get_or_404(User, user_id)
 
-    if request.method == "POST":
-        novo_perfil = request.form["perfil"]
-        usuario.perfil = novo_perfil
-        db.session.commit()
-        flash("Perfil do usuário atualizado com sucesso!", "success")
+    if usuario.id == current_user.id:
+        flash("Você não pode alterar seu próprio perfil.", "warning")
         return redirect(url_for("usuarios"))
 
-    return render_template("alterar_perfil.html", usuario=usuario)
+    novo_perfil = request.form.get("perfil")
+    if novo_perfil in ["admin", "usuario"]:
+        usuario.perfil = novo_perfil
+        db.session.commit()
+        flash(f"Perfil de {usuario.nome} atualizado para {novo_perfil}!", "success")
+    else:
+        flash("Perfil inválido selecionado.", "danger")
+
+    return redirect(url_for("usuarios"))
 
 @app.route("/admin/deletar_usuario/<int:user_id>", methods=["POST"])
 @login_required
 @admin_required
 def deletar_usuario(user_id):
-    usuario = User.query.get_or_404(user_id)
+    usuario = db.get_or_404(User, user_id)
+
+    if usuario.id == current_user.id:
+        flash("Você não pode deletar a sua própria conta.", "warning")
+        return redirect(url_for("usuarios"))
+
     db.session.delete(usuario)
     db.session.commit()
-    flash("Usuário deletado com sucesso!", "success")
+    flash(f"Usuário {usuario.nome} e seus registros foram removidos com sucesso.", "success")
     return redirect(url_for("usuarios"))
 
 #===========================================================
-#              INICIALIZAÇÃO DO BANCO DE DADOS
+#            INICIALIZAÇÃO DO BANCO DE DADOS
 #===========================================================
 
 with app.app_context():
@@ -248,14 +267,14 @@ with app.app_context():
         admin = User(
             nome="Admin",
             email="admin@email.com",
-            senha=generate_password_hash("admin123"),
+            senha=generate_password_hash("admin123", method='scrypt'),
             perfil="admin"
         )
         db.session.add(admin)
         db.session.commit()
 
 #===========================================================
-#                        EXECUÇÃO
+#                         EXECUÇÃO
 #===========================================================
 
 if __name__ == "__main__":

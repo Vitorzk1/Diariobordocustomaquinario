@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Perfil do Usuário - Diário de Bordo</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+  <header class="topo">
+    <div class="brand">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+          <circle cx="12" cy="7" r="4"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Perfil do Usuário</h1>
+        <p>Gerenciamento de Conta</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="{{ url_for('registro_horas') }}" class="btn-nav">Registros</a>
+      {% if current_user.perfil == 'admin' %}
+        <a href="{{ url_for('dashboard') }}" class="btn-nav">Painel Admin</a>
+      {% endif %}
+      <a href="{{ url_for('logout') }}" class="btn-sair">Sair</a>
+    </div>
+  </header>
+
+  <main class="container">
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">
+            <span>{{ message }}</span>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="card">
+      <div class="card-title-group">
+        <div class="logo-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/>
+            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>
+          </svg>
+        </div>
+        <h2>Editar Informações do Perfil</h2>
+      </div>
+
+      <form action="{{ url_for('perfil') }}" method="POST">
+        <div class="grid-2">
+          <div class="campo">
+            <label for="nome">Nome Completo</label>
+            <input type="text" id="nome" name="nome" value="{{ usuario.nome }}" required>
+          </div>
+
+          <div class="campo">
+            <label for="perfil_tipo">Nível de Permissão</label>
+            <input type="text" id="perfil_tipo" value="{{ usuario.perfil|upper }}" disabled style="opacity: 0.7; cursor: not-allowed;">
+          </div>
+        </div>
+
+        <div class="campo">
+          <label for="email">E-mail de Acesso</label>
+          <input type="email" id="email" value="{{ usuario.email }}" disabled style="opacity: 0.7; cursor: not-allowed;">
+        </div>
+
+        <button type="submit" class="btn-primary">Salvar Alterações</button>
+      </form>
+    </div>
+
+    <div class="metrics-grid" style="margin-top: 24px;">
+      <div class="metric-card">
+        <div class="metric-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="10"/>
+            <polyline points="12 6 12 12 16 14"/>
+          </svg>
+        </div>
+        <div class="metric-info">
+          <h3>{{ total_registros }}</h3>
+          <p>Total de Registros Feitos</p>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+</body>
+</html>

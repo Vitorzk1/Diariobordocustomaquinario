@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Diário de Bordo{% endblock %}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+  {% if current_user.is_authenticated %}
+  <header class="topo">
+    <div class="brand">
+      <div class="logo-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+      </div>
+      <div>
+        <h1>Diário de Bordo</h1>
+        <p>Olá, {{ current_user.nome }}</p>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <a href="{{ url_for('registro_horas') }}" class="btn-nav">Registros</a>
+      <a href="{{ url_for('perfil') }}" class="btn-nav">Perfil</a>
+      
+      {% if current_user.perfil == 'admin' %}
+        <a href="{{ url_for('dashboard') }}" class="btn-nav"> Painel Admin</a>
+      {% endif %}
+      
+      <a href="{{ url_for('logout') }}" class="btn-sair">Sair</a>
+    </div>
+  </header>
+  {% endif %}
+
+  <main class="container">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>
