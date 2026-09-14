@@ -37,7 +37,6 @@ class User(UserMixin, db.Model):
     senha = db.Column(db.String(120), nullable=False)
     perfil = db.Column(db.String(20), nullable=False, default="usuario")
     
-    # Relacionamento com os registros de máquinas
     registros = db.relationship('RegistroMaquina', backref='usuario', lazy=True)
 
 class RegistroMaquina(db.Model):
@@ -53,7 +52,7 @@ def carregar_usuario(user_id):
     return db.session.get(User, int(user_id))
 
 #===========================================================
-#                      DECORATORS
+#                       DECORATORS
 #===========================================================
 
 def admin_required(func):
@@ -66,7 +65,7 @@ def admin_required(func):
     return wrapper
 
 #===========================================================
-#                   ROTAS DE AUTENTICAÇÃO
+#                 ROTAS DE AUTENTICAÇÃO
 #===========================================================
 
 @app.route("/")
@@ -77,6 +76,9 @@ def index():
 
 @app.route("/cadastro", methods=["GET", "POST"])
 def cadastro():
+    if current_user.is_authenticated:
+        return redirect(url_for("registro_horas"))
+
     if request.method == "POST":
         nome = request.form["nome"]
         email = request.form["email"]
@@ -104,6 +106,9 @@ def cadastro():
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for("registro_horas"))
+
     if request.method == "POST":
         email = request.form["email"]
         senha = request.form["senha"]
@@ -144,7 +149,6 @@ def registro_horas():
         horas = request.form["horas"]
         descricao = request.form["descricao"]
 
-        # Conversão de formato de data (YYYY-MM-DD -> DD/MM/YYYY)
         if data_raw:
             data_formatada = datetime.strptime(data_raw, "%Y-%m-%d").strftime("%d/%m/%Y")
         else:
@@ -163,7 +167,6 @@ def registro_horas():
         flash("Registro inserido com sucesso!", "success")
         return redirect(url_for("registro_horas"))
 
-    # Exibe os registros do usuário logado (ou todos se for admin)
     if current_user.perfil == "admin":
         registros = RegistroMaquina.query.all()
     else:
@@ -176,7 +179,6 @@ def registro_horas():
 def excluir(id):
     registro = RegistroMaquina.query.get_or_404(id)
     
-    # Permite exclusão se for admin ou o criador do registro
     if current_user.perfil == "admin" or registro.user_id == current_user.id:
         db.session.delete(registro)
         db.session.commit()
@@ -241,7 +243,6 @@ def deletar_usuario(user_id):
 with app.app_context():
     db.create_all()
 
-    # Criação da conta Admin padrão
     admin = User.query.filter_by(email="admin@email.com").first()
     if not admin:
         admin = User(
