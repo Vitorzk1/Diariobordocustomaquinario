@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="page-header">
+    <div>
+        <h2><i class="fa-solid fa-screwdriver-wrench"></i> Plano de Manutenção Preventiva</h2>
+        <p>Acompanhe o cronograma de revisões e evite quebras mecânicas em campo.</p>
+    </div>
+</div>
+
+<!-- Cards de Resumo (KPIs) -->
+<div class="kpi-grid">
+    <div class="kpi-card">
+        <span class="kpi-title">Total de Máquinas</span>
+        <span class="kpi-value">{{ machines|length }}</span>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-title">Atenção Necessária</span>
+        <span class="kpi-value text-warning">
+            {{ machines|selectattr('service_status', 'equalto', 'warning')|list|length }}
+        </span>
+    </div>
+    <div class="kpi-card">
+        <span class="kpi-title">Manutenções Vencidas</span>
+        <span class="kpi-value text-danger">
+            {{ machines|selectattr('service_status', 'equalto', 'urgent')|list|length }}
+        </span>
+    </div>
+</div>
+
+<!-- Tabela Principal -->
+<div class="card card-table">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Máquina</th>
+                    <th>Horímetro Atual</th>
+                    <th>Última Revisão</th>
+                    <th>Próxima Revisão</th>
+                    <th>Status / Progresso</th>
+                    <th style="text-align: right;">Ações</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for m in machines %}
+                <tr>
+                    <td>
+                        <div class="machine-info">
+                            <strong>{{ m.name }}</strong>
+                            <small class="text-muted">{{ m.notes }}</small>
+                        </div>
+                    </td>
+                    <td class="font-mono font-bold">{{ m.hourmeter }} h</td>
+                    <td class="font-mono">{{ m.last_service_hour }} h</td>
+                    <td class="font-mono">{{ m.next_service_at }} h</td>
+                    <td>
+                        <div class="status-cell">
+                            {% if m.service_status == 'urgent' %}
+                                <span class="badge badge-danger">Vencida há {{ m.hours_to_service|abs }}h</span>
+                            {% elif m.service_status == 'warning' %}
+                                <span class="badge badge-warning">Faltam {{ m.hours_to_service }}h</span>
+                            {% else %}
+                                <span class="badge badge-success">Faltam {{ m.hours_to_service }}h</span>
+                            {% endif %}
+                            
+                            <div class="progress-container">
+                                {% set calc_width = ((m.hourmeter - m.last_service_hour) / m.service_interval * 100) %}
+                                {% set width = 100 if calc_width > 100 else calc_width %}
+                                <div class="progress-bar {% if m.service_status == 'urgent' %}bar-danger{% elif m.service_status == 'warning' %}bar-amber{% else %}bar-emerald{% endif %}" 
+                                     style="width: {{ width }}%;">
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="action-buttons" style="justify-content: flex-end;">
+                            <form action="{{ url_for('update_hourmeter', machine_id=m.id) }}" method="POST">
+                                <input type="hidden" name="hours" value="10">
+                                <button type="submit" class="btn btn-xs btn-outline" title="Adicionar 10 horas de uso">+10h</button>
+                            </form>
+                            <form action="{{ url_for('complete_service', machine_id=m.id) }}" method="POST">
+                                <button type="submit" class="btn btn-xs btn-success">
+                                    <i class="fa-solid fa-check"></i> Registrar
+                                </button>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        Nenhuma máquina cadastrada no momento.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Grid de Checklists -->
+<div class="checklist-grid">
+    <div class="checklist-card">
+        <h4 class="text-emerald"><i class="fa-solid fa-calendar-day"></i> A cada 250 Horas</h4>
+        <ul>
+            <li>Troca do óleo do motor e filtro</li>
+            <li>Drenagem do decantador de água do diesel</li>
+            <li>Limpeza/inspeção do filtro de ar do motor</li>
+            <li>Verificação do nível de fluido hidráulico</li>
+        </ul>
+    </div>
+
+    <div class="checklist-card">
+        <h4 class="text-amber"><i class="fa-solid fa-calendar-week"></i> A cada 500 Horas</h4>
+        <ul>
+            <li>Troca de todos os filtros de combustível</li>
+            <li>Substituição completa dos filtros de ar</li>
+            <li>Troca do filtro de transmissão</li>
+            <li>Lubrificação/engraxamento dos eixos</li>
+        </ul>
+    </div>
+
+    <div class="checklist-card">
+        <h4 class="text-sky"><i class="fa-solid fa-calendar-days"></i> A cada 1000 Horas</h4>
+        <ul>
+            <li>Troca total do óleo hidráulico e transmissão</li>
+            <li>Substituição do líquido de arrefecimento</li>
+            <li>Regulagem de válvulas do motor</li>
+            <li>Inspeção do sistema de injeção e correias</li>
+        </ul>
+    </div>
+</div>
+{% endblock %}
