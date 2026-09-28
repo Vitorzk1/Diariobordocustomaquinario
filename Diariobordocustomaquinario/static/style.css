@@ -1,0 +1,430 @@
+/* =========================================================
+   KPIs - CARDS DE RESUMO
+========================================================= */
+
+.kpi-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin: 1.5rem 0;
+}
+
+.kpi-card {
+    background: var(--card-bg);
+    padding: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+}
+
+.kpi-title {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+}
+
+.kpi-value {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 0.25rem;
+}
+
+
+/* =========================================================
+   BADGES DE STATUS
+========================================================= */
+
+.badge {
+    display: inline-block;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.badge-danger {
+    background-color: rgba(239, 68, 68, 0.2);
+    color: var(--danger);
+}
+
+.badge-warning {
+    background-color: rgba(245, 158, 11, 0.2);
+    color: var(--amber);
+}
+
+.badge-success {
+    background-color: rgba(16, 185, 129, 0.2);
+    color: var(--emerald);
+}
+
+
+/* =========================================================
+   FORMULÁRIO DE CADASTRO DE MÁQUINA
+========================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 1rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+}
+
+.form-group label {
+    font-size: 0.85rem;
+    font-weight: bold;
+    color: var(--text-muted);
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 0.7rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--card-bg);
+    color: inherit;
+    box-sizing: border-box;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--emerald);
+}
+
+
+/* =========================================================
+   BOTÕES
+========================================================= */
+
+.btn {
+    border: none;
+    border-radius: 6px;
+    padding: 0.6rem 1rem;
+    cursor: pointer;
+    font-weight: bold;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    text-decoration: none;
+}
+
+.btn-primary {
+    background-color: var(--emerald);
+    color: white;
+}
+
+.btn-success {
+    background-color: var(--emerald);
+    color: white;
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-outline {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: inherit;
+}
+
+.btn-xs {
+    padding: 0.35rem 0.55rem;
+    font-size: 0.75rem;
+}
+
+.btn:hover {
+    opacity: 0.85;
+}
+
+
+/* =========================================================
+   ÁREA DOS BOTÕES DE AÇÃO
+========================================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+
+/* =========================================================
+   TABELA
+========================================================= */
+
+.card-table {
+    overflow: hidden;
+}
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+table th,
+table td {
+    padding: 0.9rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border-color);
+}
+
+table th {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    font-weight: bold;
+}
+
+table tbody tr:hover {
+    background-color: rgba(255, 255, 255, 0.02);
+}
+
+
+/* =========================================================
+   INFORMAÇÕES DA MÁQUINA
+========================================================= */
+
+.machine-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.machine-info strong {
+    font-size: 0.95rem;
+}
+
+.text-muted {
+    color: var(--text-muted);
+    font-size: 0.8rem;
+}
+
+.font-mono {
+    font-family: monospace;
+}
+
+.font-bold {
+    font-weight: bold;
+}
+
+
+/* =========================================================
+   STATUS E BARRA DE PROGRESSO
+========================================================= */
+
+.status-cell {
+    min-width: 150px;
+}
+
+.progress-container {
+    width: 100%;
+    height: 7px;
+    background-color: var(--border-color);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-top: 0.5rem;
+}
+
+.progress-bar {
+    width: 0;
+    height: 100%;
+    border-radius: 10px;
+    transition: width 0.3s ease;
+}
+
+.bar-danger {
+    background-color: var(--danger);
+}
+
+.bar-amber {
+    background-color: var(--amber);
+}
+
+.bar-emerald {
+    background-color: var(--emerald);
+}
+
+
+/* =========================================================
+   CHECKLISTS
+========================================================= */
+
+.checklist-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.checklist-card {
+    background: var(--card-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1.2rem;
+}
+
+.checklist-card h3 {
+    margin-top: 0;
+    margin-bottom: 1.2rem;
+}
+
+.checklist-card h4 {
+    margin-top: 1.2rem;
+    margin-bottom: 0.7rem;
+}
+
+
+/* =========================================================
+   LISTA DE TAREFAS
+========================================================= */
+
+.maintenance-checklist {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1rem 0;
+}
+
+.maintenance-checklist li {
+    padding: 0.6rem 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.maintenance-checklist li:last-child {
+    border-bottom: none;
+}
+
+.maintenance-checklist form {
+    margin: 0;
+}
+
+.maintenance-checklist label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+}
+
+.maintenance-checklist input[type="checkbox"] {
+    width: 17px;
+    height: 17px;
+    cursor: pointer;
+}
+
+
+/* =========================================================
+   TAREFA CONCLUÍDA
+========================================================= */
+
+.maintenance-checklist li.completed span {
+    text-decoration: line-through;
+    opacity: 0.55;
+}
+
+.maintenance-checklist li.completed {
+    opacity: 0.75;
+}
+
+
+/* =========================================================
+   CORES DOS TÍTULOS
+========================================================= */
+
+.text-emerald {
+    color: var(--emerald);
+}
+
+.text-amber {
+    color: var(--amber);
+}
+
+.text-sky {
+    color: #38bdf8;
+}
+
+.text-warning {
+    color: var(--amber);
+}
+
+.text-danger {
+    color: var(--danger);
+}
+
+
+/* =========================================================
+   CABEÇALHO DA PÁGINA
+========================================================= */
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+
+/* =========================================================
+   CARD DO FORMULÁRIO
+========================================================= */
+
+.card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.card-header h3 {
+    margin: 0;
+}
+
+
+/* =========================================================
+   RESPONSIVIDADE
+========================================================= */
+
+@media (max-width: 768px) {
+
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+
+    .page-header .btn {
+        width: 100%;
+    }
+
+    .action-buttons {
+        justify-content: flex-start !important;
+    }
+
+    table th,
+    table td {
+        padding: 0.65rem;
+    }
+
+    .checklist-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .kpi-grid {
+        grid-template-columns: 1fr;
+    }
+
+}

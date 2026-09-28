@@ -1,0 +1,727 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<!-- =========================================================
+     CABEÇALHO
+========================================================= -->
+
+<div class="page-header">
+    <div>
+        <h2>
+            <i class="fa-solid fa-screwdriver-wrench"></i>
+            Plano de Manutenção Preventiva
+        </h2>
+
+        <p>
+            Acompanhe o cronograma de revisões e evite quebras mecânicas em campo.
+        </p>
+    </div>
+
+    <!-- Botão para cadastrar máquina -->
+    <button
+        type="button"
+        class="btn btn-primary"
+        onclick="document.getElementById('machine-form').style.display='block'"
+    >
+        <i class="fa-solid fa-plus"></i>
+        Cadastrar Máquina
+    </button>
+</div>
+
+
+<!-- =========================================================
+     FORMULÁRIO DE CADASTRO DE MÁQUINA
+========================================================= -->
+
+<div
+    id="machine-form"
+    class="card"
+    style="display: none; margin-bottom: 1.5rem;"
+>
+
+    <div class="card-header">
+        <h3>
+            <i class="fa-solid fa-tractor"></i>
+            Nova Máquina
+        </h3>
+    </div>
+
+    <form
+        action="{{ url_for('add_machine') }}"
+        method="POST"
+        style="padding: 1.5rem;"
+    >
+
+        <div class="form-grid">
+
+            <!-- Nome -->
+            <div class="form-group">
+                <label for="name">
+                    Nome da máquina
+                </label>
+
+                <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    placeholder="Ex.: Trator CAT 320"
+                    required
+                >
+            </div>
+
+
+            <!-- Observações -->
+            <div class="form-group">
+                <label for="notes">
+                    Observações
+                </label>
+
+                <input
+                    type="text"
+                    id="notes"
+                    name="notes"
+                    placeholder="Ex.: Frota A"
+                >
+            </div>
+
+
+            <!-- Horímetro -->
+            <div class="form-group">
+                <label for="hourmeter">
+                    Horímetro atual
+                </label>
+
+                <input
+                    type="number"
+                    id="hourmeter"
+                    name="hourmeter"
+                    min="0"
+                    step="0.1"
+                    placeholder="Ex.: 1200"
+                    required
+                >
+            </div>
+
+
+            <!-- Intervalo -->
+            <div class="form-group">
+                <label for="service_interval">
+                    Intervalo de manutenção
+                </label>
+
+                <select
+                    id="service_interval"
+                    name="service_interval"
+                    required
+                >
+                    <option value="250">250 horas</option>
+                    <option value="500">500 horas</option>
+                    <option value="1000">1000 horas</option>
+                </select>
+            </div>
+
+        </div>
+
+
+        <!-- Botões -->
+        <div
+            class="action-buttons"
+            style="margin-top: 1rem;"
+        >
+
+            <button
+                type="submit"
+                class="btn btn-success"
+            >
+                <i class="fa-solid fa-check"></i>
+                Cadastrar
+            </button>
+
+
+            <button
+                type="button"
+                class="btn btn-outline"
+                onclick="document.getElementById('machine-form').style.display='none'"
+            >
+                Cancelar
+            </button>
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<!-- =========================================================
+     CARDS DE RESUMO
+========================================================= -->
+
+<div class="kpi-grid">
+
+    <!-- Total -->
+    <div class="kpi-card">
+
+        <span class="kpi-title">
+            Total de Máquinas
+        </span>
+
+        <span class="kpi-value">
+            {{ machines|length }}
+        </span>
+
+    </div>
+
+
+    <!-- Atenção -->
+    <div class="kpi-card">
+
+        <span class="kpi-title">
+            Atenção Necessária
+        </span>
+
+        <span class="kpi-value text-warning">
+            {{
+                machines
+                |selectattr('service_status', 'equalto', 'warning')
+                |list
+                |length
+            }}
+        </span>
+
+    </div>
+
+
+    <!-- Vencidas -->
+    <div class="kpi-card">
+
+        <span class="kpi-title">
+            Manutenções Vencidas
+        </span>
+
+        <span class="kpi-value text-danger">
+            {{
+                machines
+                |selectattr('service_status', 'equalto', 'urgent')
+                |list
+                |length
+            }}
+        </span>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     TABELA DE MÁQUINAS
+========================================================= -->
+
+<div class="card card-table">
+
+    <div class="table-wrapper">
+
+        <table>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Máquina
+                    </th>
+
+                    <th>
+                        Horímetro Atual
+                    </th>
+
+                    <th>
+                        Última Revisão
+                    </th>
+
+                    <th>
+                        Próxima Revisão
+                    </th>
+
+                    <th>
+                        Status / Progresso
+                    </th>
+
+                    <th style="text-align: right;">
+                        Ações
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+                {% for m in machines %}
+
+                <tr>
+
+                    <!-- Máquina -->
+                    <td>
+
+                        <div class="machine-info">
+
+                            <strong>
+                                {{ m.name }}
+                            </strong>
+
+                            <small class="text-muted">
+                                {{ m.notes or 'Sem observações' }}
+                            </small>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- Horímetro -->
+                    <td class="font-mono font-bold">
+                        {{ m.hourmeter }} h
+                    </td>
+
+
+                    <!-- Última revisão -->
+                    <td class="font-mono">
+                        {{ m.last_service_hour }} h
+                    </td>
+
+
+                    <!-- Próxima revisão -->
+                    <td class="font-mono">
+                        {{ m.next_service_at }} h
+                    </td>
+
+
+                    <!-- STATUS -->
+                    <td>
+
+                        <div class="status-cell">
+
+                            {% if m.service_status == 'urgent' %}
+
+                                <span class="badge badge-danger">
+                                    Vencida há
+                                    {{ m.hours_to_service|abs }}h
+                                </span>
+
+                            {% elif m.service_status == 'warning' %}
+
+                                <span class="badge badge-warning">
+                                    Faltam
+                                    {{ m.hours_to_service }}h
+                                </span>
+
+                            {% else %}
+
+                                <span class="badge badge-success">
+                                    Faltam
+                                    {{ m.hours_to_service }}h
+                                </span>
+
+                            {% endif %}
+
+
+                            <!-- Barra de progresso -->
+
+                            {% if m.service_interval > 0 %}
+
+                                {% set calc_width =
+                                    (
+                                        (
+                                            m.hourmeter -
+                                            m.last_service_hour
+                                        )
+                                        /
+                                        m.service_interval
+                                        *
+                                        100
+                                    )
+                                %}
+
+                                {% set width =
+                                    100 if calc_width > 100
+                                    else
+                                    (0 if calc_width < 0 else calc_width)
+                                %}
+
+                            {% else %}
+
+                                {% set width = 0 %}
+
+                            {% endif %}
+
+
+                            <div class="progress-container">
+
+                                <div
+                                    class="progress-bar {% if m.service_status == 'urgent' %}bar-danger{% elif m.service_status == 'warning' %}bar-amber{% else %}bar-emerald{% endif %}"
+                                    data-width="{{ width }}"
+                                ></div>
+
+                            </div>
+
+                        </div>
+
+                    </td>
+
+
+                    <!-- AÇÕES -->
+                    <td>
+
+                        <div
+                            class="action-buttons"
+                            style="justify-content: flex-end;"
+                        >
+
+                            <!-- Adicionar 10 horas -->
+
+                            <form
+                                action="{{ url_for('update_hourmeter', machine_id=m.id) }}"
+                                method="POST"
+                            >
+
+                                <input
+                                    type="hidden"
+                                    name="hours"
+                                    value="10"
+                                >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-xs btn-outline"
+                                    title="Adicionar 10 horas de uso"
+                                >
+                                    +10h
+                                </button>
+
+                            </form>
+
+
+                            <!-- Registrar manutenção -->
+
+                            <form
+                                action="{{ url_for('complete_service', machine_id=m.id) }}"
+                                method="POST"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-xs btn-success"
+                                >
+                                    <i class="fa-solid fa-check"></i>
+                                    Registrar
+                                </button>
+
+                            </form>
+
+
+                            <!-- Excluir máquina -->
+
+                            <form
+                                action="{{ url_for('delete_machine', machine_id=m.id) }}"
+                                method="POST"
+                                onsubmit="return confirm('Tem certeza que deseja excluir esta máquina?');"
+                            >
+
+                                <button
+                                    type="submit"
+                                    class="btn btn-xs btn-danger"
+                                    title="Excluir máquina"
+                                >
+                                    <i class="fa-solid fa-trash"></i>
+                                </button>
+
+                            </form>
+
+                        </div>
+
+                    </td>
+
+                </tr>
+
+
+                {% else %}
+
+                <tr>
+
+                    <td
+                        colspan="6"
+                        style="
+                            text-align: center;
+                            color: var(--text-muted);
+                            padding: 2rem;
+                        "
+                    >
+
+                        <i class="fa-solid fa-tractor"></i>
+
+                        <br><br>
+
+                        Nenhuma máquina cadastrada no momento.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- =========================================================
+     CHECKLISTS DE MANUTENÇÃO
+========================================================= -->
+
+<div
+    class="page-header"
+    style="margin-top: 2rem;"
+>
+
+    <div>
+
+        <h2>
+            <i class="fa-solid fa-list-check"></i>
+            Checklists de Manutenção
+        </h2>
+
+        <p>
+            Marque as tarefas realizadas. As informações são salvas no banco de dados.
+        </p>
+
+    </div>
+
+</div>
+
+
+<div class="checklist-grid">
+
+    {% for machine in machines %}
+
+    <div class="checklist-card">
+
+        <h3>
+            <i class="fa-solid fa-tractor"></i>
+            {{ machine.name }}
+        </h3>
+
+
+        <!-- =================================================
+             CHECKLIST 250 HORAS
+        ================================================== -->
+
+        <h4 class="text-emerald">
+
+            <i class="fa-solid fa-calendar-day"></i>
+
+            A cada 250 Horas
+
+        </h4>
+
+
+        <ul class="maintenance-checklist">
+
+            {% for item in machine.checklists if item.interval == 250 %}
+
+            <li
+                {% if item.completed %}
+                    class="completed"
+                {% endif %}
+            >
+
+                <form
+                    action="{{ url_for('toggle_checklist', checklist_id=item.id) }}"
+                    method="POST"
+                >
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            onchange="this.form.submit()"
+                            {% if item.completed %}
+                                checked
+                            {% endif %}
+                        >
+
+                        <span>
+                            {{ item.task }}
+                        </span>
+
+                    </label>
+
+                </form>
+
+            </li>
+
+            {% else %}
+
+            <li>
+                Nenhuma tarefa cadastrada.
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+
+        <!-- =================================================
+             CHECKLIST 500 HORAS
+        ================================================== -->
+
+        <h4 class="text-amber">
+
+            <i class="fa-solid fa-calendar-week"></i>
+
+            A cada 500 Horas
+
+        </h4>
+
+
+        <ul class="maintenance-checklist">
+
+            {% for item in machine.checklists if item.interval == 500 %}
+
+            <li
+                {% if item.completed %}
+                    class="completed"
+                {% endif %}
+            >
+
+                <form
+                    action="{{ url_for('toggle_checklist', checklist_id=item.id) }}"
+                    method="POST"
+                >
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            onchange="this.form.submit()"
+                            {% if item.completed %}
+                                checked
+                            {% endif %}
+                        >
+
+                        <span>
+                            {{ item.task }}
+                        </span>
+
+                    </label>
+
+                </form>
+
+            </li>
+
+            {% else %}
+
+            <li>
+                Nenhuma tarefa cadastrada.
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+
+        <!-- =================================================
+             CHECKLIST 1000 HORAS
+        ================================================== -->
+
+        <h4 class="text-sky">
+
+            <i class="fa-solid fa-calendar-days"></i>
+
+            A cada 1000 Horas
+
+        </h4>
+
+
+        <ul class="maintenance-checklist">
+
+            {% for item in machine.checklists if item.interval == 1000 %}
+
+            <li
+                {% if item.completed %}
+                    class="completed"
+                {% endif %}
+            >
+
+                <form
+                    action="{{ url_for('toggle_checklist', checklist_id=item.id) }}"
+                    method="POST"
+                >
+
+                    <label>
+
+                        <input
+                            type="checkbox"
+                            onchange="this.form.submit()"
+                            {% if item.completed %}
+                                checked
+                            {% endif %}
+                        >
+
+                        <span>
+                            {{ item.task }}
+                        </span>
+
+                    </label>
+
+                </form>
+
+            </li>
+
+            {% else %}
+
+            <li>
+                Nenhuma tarefa cadastrada.
+            </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+
+    {% else %}
+
+    <div class="card">
+
+        <p>
+            Cadastre uma máquina para visualizar suas checklists.
+        </p>
+
+    </div>
+
+    {% endfor %}
+
+</div>
+
+
+<!-- =========================================================
+     JAVASCRIPT DA BARRA DE PROGRESSO
+========================================================= -->
+
+<script>
+    document.querySelectorAll('.progress-bar').forEach(function (bar) {
+        const width = parseFloat(bar.dataset.width) || 0;
+
+        bar.style.width = Math.min(Math.max(width, 0), 100) + '%';
+    });
+</script>
+
+{% endblock %}
