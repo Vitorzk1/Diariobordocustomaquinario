@@ -1,92 +1,67 @@
-# 🚜 Diário de Bordo — Custo de Maquinário Agrícola
+# Diário de Bordo — Integração Total
 
-<p align="center">
-  <img src="https://img.shields.io/badge/IFRO-Campus%20Ariquemes-00875F?style=for-the-badge&logo=google-academic&logoColor=white" alt="IFRO">
-  <img src="https://img.shields.io/badge/Curso-Técnico%20em%20Informática-0052CC?style=for-the-badge&logo=codeforces&logoColor=white" alt="Curso">
-  <img src="https://img.shields.io/badge/Turma-3º%20Ano%20B-7952B3?style=for-the-badge" alt="Turma">
-  <img src="https://img.shields.io/badge/Ano-2026-orange?style=for-the-badge" alt="Ano">
-</p>
+Aplicação web Flask para gerenciamento de máquinas agrícolas, horímetro, abastecimentos, custos de combustível, checklist de manutenção e usuários.
 
-> **Sistema de Gestão e Controle Operacional de Maquinário Agrícola.**  
-> Uma solução digital projetada para substituir cadernos de campo e planilhas manuais, automatizando o controle de horas de trabalho, consumo de combustível e manutenção preventiva de frotas agrícolas.
+## Estrutura
 
----
+- `app.py`: rotas Flask, modelos SQLAlchemy, login e regras de acesso.
+- `templates/`: páginas HTML renderizadas com Jinja2.
+- `static/style.css`: estilos da interface.
+- `requirements.txt`: dependências Python.
+- `diagramas/`: fluxograma, modelo de dados e diagramas C4 de contexto e container.
 
-## 📋 Sumário
-- [Sobre o Projeto](#-sobre-o-projeto)
-- [Problema vs. Solução](#-problema-vs-solução)
-- [Principais Funcionalidades](#-principais-funcionalidades)
-- [Modelagem do Sistema (UML)](#-modelagem-do-sistema-uml)
-- [Casos de Teste & Qualidade](#-casos-de-teste--qualidade)
-- [Arquitetura & Tecnologias](#-arquitetura--tecnologias)
-- [Como Executar o Projeto](#-como-executar-o-projeto)
-- [Equipe de Desenvolvimento](#-equipe-de-desenvolvimento)
+## Executar no Windows / VS Code
 
----
+1. Instale Python 3.11 ou mais recente compatível com as dependências.
+2. Abra esta pasta no VS Code e abra o terminal.
+3. Crie e ative um ambiente virtual:
 
-## 📌 Sobre o Projeto
-
-No agronegócio moderno, a gestão eficiente do maquinário é um fator determinante para a lucratividade. O **Diário de Bordo** foi idealizado para registrar com precisão o ciclo de vida operacional de tratores, colheitadeiras e implementos, fornecendo ao produtor rural dados confiáveis para tomada de decisão e cálculo de custo/hora.
-
-### 💡 Problema vs. Solução
-
-| Desafio Atual (Manual) | Solução Diário de Bordo |
-| :--- | :--- |
-| Anotações em papel sujeitas a perda ou rasuras | Registros digitais centralizados e seguros |
-| Falta de controle sobre o horímetro acumulado | Cálculo automático de horas trabalhadas por máquina |
-| Manutenções realizadas apenas após quebras | Alertas e agendamento de manutenção preventiva |
-| Dificuldade para apurar o custo exato da hora/máquina | Relatórios consolidados de custos e consumo |
-
----
-
-## 🚀 Principais Funcionalidades
-
-- [x] **Cadastro e Gestão de Frota:** Registro detalhado de máquinas, modelos, placas e horímetro inicial.
-- [x] **Apontamento Diário de Horímetro:** Lançamento das horas trabalhadas por operador ao final de cada jornada.
-- [x] **Gestão de Abastecimento:** Controle de consumo de combustível e cálculo de eficiência (L/h).
-- [x] **Plano de Manutenção Preventiva:** Registro de trocas de óleo, filtros e revisões periódicas.
-- [x] **Relatórios Operacionais:** Visualização clara do total de horas acumuladas e despesas operacionais.
-
----
-
-
-## 🧪 Casos de Teste & Qualidade
-
-Para garantir a confiabilidade do sistema, a aplicação conta com cenários de teste estruturados baseados nos critérios de aceitação:
-
-| ID | Cenário | Ação | Resultado Esperado |
-| :---: | :--- | :--- | :--- |
-| **CT-01** | Cadastro de Máquina | Inserir nome, modelo e horímetro inicial | Máquina salva e disponível no sistema |
-| **CT-02** | Registro Diário de Horas | Selecionar máquina e lançar horímetro atual | Registro gravado e total atualizado |
-| **CT-03** | Cálculo de Horas Acumuladas | Consultar painel da máquina | Soma automática de todos os registros diários |
-| **CT-04** | Validação de Entrada | Inserir valores de horas negativos ou texto | Bloqueio imediato com aviso de erro |
-
----
-
-## 💻 Como Executar o Projeto
-
-```bash
-# 1. Clocar o repositório
-git clone https://github.com/seu-usuario/Diariobordocustomaquinario.git
-
-# 2. Entrar na pasta do projeto
-cd Diariobordocustomaquinario
-
-# 3. Instalar as dependências
-npm install
-
-# 4. Iniciar a aplicação
-npm start
+```powershell
+python -m venv venv
+.\venv\Scripts\Activate.ps1
 ```
 
----
+Se usar CMD, ative com `venv\Scripts\activate.bat`.
 
-## 👥 Equipe de Desenvolvimento
+4. Instale as dependências e inicie a aplicação:
 
-Projeto desenvolvido pelos estudantes da turma do **3º Ano B (Curso Técnico em Informática)** do **Instituto Federal de Rondônia (IFRO) — Campus Ariquemes** (Ano letivo: 2026).
+```bash
+python -m pip install --upgrade pip
+pip install -r requirements.txt
+python app.py
+```
 
----
+5. Acesse http://127.0.0.1:5000.
 
-<p align="center">
-  <b>IFRO Campus Ariquemes • 2026</b>
-</p>
+## Conta administrativa inicial
+
+Na primeira inicialização, o aplicativo cria um administrador inicial, caso não exista:
+
+- E-mail: `admin@email.com`
+- Senha inicial: `admin123`
+
+Entre e altere a senha antes de disponibilizar o sistema publicamente. Configure uma `SECRET_KEY` forte por variável de ambiente em produção. Não use o servidor de desenvolvimento Flask para hospedar o site publicamente.
+
+## Banco de dados
+
+O projeto usa SQLite e `db.create_all()` para criar as tabelas. O banco é criado no ambiente em que a aplicação roda; o banco local não é automaticamente transferido para o PythonAnywhere. Faça backup dos dados antes de migrações ou alterações de estrutura.
+
+## Publicação no PythonAnywhere
+
+1. Envie o projeto ao GitHub.
+2. Clone o repositório no console Bash do PythonAnywhere.
+3. Crie um virtualenv e instale `requirements.txt`.
+4. Configure o WSGI para importar `app` como `application`.
+5. Configure `/static/` para apontar para a pasta `static` e recarregue a aplicação.
+
+Consulte a documentação do PythonAnywhere para os passos atualizados: https://help.pythonanywhere.com/pages/Flask/
+
+## Diagramas
+
+Veja os arquivos Mermaid em `diagramas/`. Eles descrevem o fluxo principal, os modelos existentes no `app.py` e os diagramas C4 de contexto e container.
+
+## Segurança
+
+- O administrador inicial usa uma senha conhecida: troque-a imediatamente.
+- Defina `SECRET_KEY` por variável de ambiente antes da publicação.
+- Revise regras de autorização e validação de dados antes de uso real.

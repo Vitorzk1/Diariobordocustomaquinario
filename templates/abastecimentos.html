@@ -1,0 +1,13 @@
+{% extends 'base.html' %}{% block title %}Combustível{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Registro de Combustível</h1><p class="muted">Controle de litros, custo e consumo médio em L/h.</p></div></div>
+<section class="card"><form method="post" class="form-grid four">
+<label>Máquina<select name="machine_id" required>{% for m in machines %}<option value="{{ m.id }}">{{ m.name }}</option>{% endfor %}</select></label>
+<label>Data<input type="date" name="data" required></label>
+<label>Litros<input type="number" name="litros" min="0.1" step="0.1" required></label>
+<label>Horas do período<input type="number" name="horas" min="0.1" step="0.1" required></label>
+<label>Preço por litro (R$)<input type="number" name="valor_litro" min="0" step="0.01" required></label>
+<button class="btn primary full">Registrar abastecimento</button></form></section>
+<section class="card"><div class="table-wrap"><table><thead><tr><th>Data</th><th>Máquina</th><th>Litros</th><th>Horas</th><th>Consumo</th><th>Custo</th><th></th></tr></thead><tbody>
+{% for r in registros %}<tr><td>{{ r.data.strftime('%d/%m/%Y') }}</td><td>{{ r.machine.name }}</td><td>{{ '%.1f'|format(r.litros) }} L</td><td>{{ '%.1f'|format(r.horas_trabalhadas) }} h</td><td>{{ '%.2f'|format(r.consumo_medio) }} L/h</td><td>R$ {{ '%.2f'|format(r.valor_total) }}</td><td>{% if current_user.perfil in ['admin','supervisor'] %}<form method="post" action="{{ url_for('delete_fuel_record', registro_id=r.id) }}"><button class="btn danger small" onclick="return confirm('Excluir o abastecimento?')">Excluir</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="7">Nenhum abastecimento.</td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

@@ -1,0 +1,11 @@
+C4Context
+    title Diário de Bordo — Diagrama de Contexto C4
+    Person(operador, "Operador", "Registra horas e abastecimentos e consulta máquinas")
+    Person(supervisor, "Supervisor", "Gerencia registros e conclui manutenções")
+    Person(admin, "Administrador", "Gerencia usuários e acessos")
+    System(sistema, "Diário de Bordo / Custom Maquinário", "Aplicação web Flask para controle operacional de máquinas agrícolas")
+    System_Ext(navegador, "Navegador web", "Interface usada pelo usuário")
+    Rel(operador, navegador, "Acessa")
+    Rel(supervisor, navegador, "Acessa")
+    Rel(admin, navegador, "Acessa")
+    Rel(navegador, sistema, "Usa HTTPS/HTTP", "HTML, CSS, formulários")

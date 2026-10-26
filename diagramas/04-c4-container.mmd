@@ -1,0 +1,13 @@
+C4Container
+    title Diário de Bordo — Diagrama de Container C4
+    Person(usuario, "Usuário", "Operador, supervisor ou administrador")
+    System_Boundary(sistema, "Diário de Bordo / Custom Maquinário") {
+        Container(web, "Aplicação Web", "Python / Flask", "Rotas, autenticação, regras de negócio e autorização")
+        Container(templates, "Interface Web", "Jinja2, HTML, CSS", "Páginas responsivas, formulários, tabelas e indicadores")
+        ContainerDb(db, "Banco de dados", "SQLite / SQLAlchemy", "Usuários, máquinas, horas, abastecimentos e checklist")
+        Container(static, "Arquivos estáticos", "CSS", "Estilos e recursos estáticos da interface")
+    }
+    Rel(usuario, templates, "Usa pelo navegador")
+    Rel(templates, web, "Envia formulários / recebe páginas", "HTTP")
+    Rel(web, db, "Lê e grava dados", "SQLAlchemy ORM")
+    Rel(templates, static, "Carrega estilos", "HTTP /static")

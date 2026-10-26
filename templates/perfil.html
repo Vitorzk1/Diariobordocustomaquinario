@@ -1,0 +1,2 @@
+{% extends 'base.html' %}{% block title %}Perfil{% endblock %}
+{% block content %}<section class="card"><h1>Perfil</h1><p><strong>Nome:</strong> {{ current_user.nome }}</p><p><strong>E-mail:</strong> {{ current_user.email }}</p><p><strong>Perfil:</strong> {{ current_user.perfil }}</p></section>{% endblock %}

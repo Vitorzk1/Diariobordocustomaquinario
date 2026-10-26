@@ -1,0 +1,28 @@
+flowchart TD
+    A([Início]) --> B[Usuário acessa o sistema]
+    B --> C{Está autenticado?}
+    C -- Não --> D[Tela de login/cadastro]
+    D --> E{Credenciais válidas?}
+    E -- Não --> D
+    E -- Sim --> F[Dashboard]
+    C -- Sim --> F
+    F --> G{Ação desejada}
+    G --> H[Consultar máquinas e indicadores]
+    G --> I[Registrar horas trabalhadas]
+    G --> J[Registrar abastecimento]
+    G --> K[Consultar manutenção e checklist]
+    G --> L[Administrar usuários]
+    I --> M[Validar dados e atualizar horímetro]
+    J --> N[Validar dados e calcular custo/consumo]
+    K --> O[Atualizar checklist ou concluir revisão]
+    L --> P{Perfil é admin?}
+    P -- Não --> Q[Acesso negado]
+    P -- Sim --> R[Gerenciar perfis/usuários]
+    H --> S[(Banco SQLite)]
+    M --> S
+    N --> S
+    O --> S
+    R --> S
+    S --> T[Mostrar resultado/indicadores]
+    Q --> F
+    T --> F

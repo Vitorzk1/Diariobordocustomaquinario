@@ -1,0 +1,12 @@
+{% extends 'base.html' %}{% block title %}Login{% endblock %}
+{% block content %}
+<div class="auth card">
+  <h1>Entrar no sistema</h1><p class="muted">Diário de Bordo — Custo de Maquinário</p>
+  <form method="post">
+    <label>E-mail<input type="email" name="email" required></label>
+    <label>Senha<input type="password" name="senha" required></label>
+    <button class="btn primary">Entrar</button>
+  </form>
+  <p>Não tem conta? <a href="{{ url_for('cadastro') }}">Cadastre-se</a></p>
+</div>
+{% endblock %}

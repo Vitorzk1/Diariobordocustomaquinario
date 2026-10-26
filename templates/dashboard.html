@@ -1,0 +1,36 @@
+{% extends 'base.html' %}{% block title %}Dashboard{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Dashboard</h1><p class="muted">Visão geral da operação, horas, combustível e manutenção.</p></div></div>
+<div class="kpis">
+  <div class="kpi"><span>Máquinas</span><strong>{{ machines|length }}</strong></div>
+  <div class="kpi"><span>Horas registradas</span><strong>{{ '%.1f'|format(total_horas) }} h</strong></div>
+  <div class="kpi"><span>Combustível</span><strong>{{ '%.1f'|format(total_litros) }} L</strong></div>
+  <div class="kpi"><span>Custo combustível</span><strong>R$ {{ '%.2f'|format(total_combustivel) }}</strong></div>
+</div>
+<div class="grid-2">
+<section class="card">
+  <div class="section-head"><h2>Cadastro de máquina</h2></div>
+  <form method="post" action="{{ url_for('add_machine') }}" class="form-grid">
+    <label>Nome<input name="name" placeholder="Ex.: Trator John Deere" required></label>
+    <label>Observações<input name="notes" placeholder="Frota A"></label>
+    <label>Horímetro inicial<input type="number" name="hourmeter" min="0" step="0.1" required></label>
+    <label>Intervalo<select name="service_interval"><option value="250">250 h</option><option value="500">500 h</option><option value="1000">1000 h</option></select></label>
+    <button class="btn primary full">Cadastrar máquina</button>
+  </form>
+</section>
+<section class="card">
+  <div class="section-head"><h2>Acesso rápido</h2></div>
+  <div class="quick-links">
+    <a class="btn" href="{{ url_for('registro_horas') }}">Registrar horas</a>
+    <a class="btn" href="{{ url_for('abastecimentos') }}">Registrar combustível</a>
+    <a class="btn" href="{{ url_for('manutencao') }}">Ver manutenção</a>
+  </div>
+</section>
+</div>
+<section class="card">
+  <div class="section-head"><h2>Máquinas</h2></div>
+  <div class="table-wrap"><table><thead><tr><th>Máquina</th><th>Horímetro</th><th>Próxima revisão</th><th>Status</th><th>Ação</th></tr></thead><tbody>
+  {% for m in machines %}<tr><td><strong>{{ m.name }}</strong><br><small>{{ m.notes or '' }}</small></td><td>{{ '%.1f'|format(m.hourmeter) }} h</td><td>{{ '%.1f'|format(m.next_service_at) }} h</td><td><span class="badge {{ m.service_status }}">{% if m.service_status=='urgent' %}Vencida{% elif m.service_status=='warning' %}Atenção{% else %}Normal{% endif %}</span></td><td>{% if current_user.perfil in ['admin','supervisor'] %}<form method="post" action="{{ url_for('delete_machine', machine_id=m.id) }}"><button class="btn danger small" onclick="return confirm('Excluir esta máquina?')">Excluir</button></form>{% endif %}</td></tr>{% else %}<tr><td colspan="5">Nenhuma máquina cadastrada.</td></tr>{% endfor %}
+</tbody></table></div>
+</section>
+{% endblock %}

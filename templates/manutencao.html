@@ -1,0 +1,23 @@
+{% extends 'base.html' %}{% block title %}Manutenção{% endblock %}
+{% block content %}
+<div class="page-head"><div><h1>Manutenção Preventiva</h1><p class="muted">Acompanhe as revisões e o checklist de cada máquina.</p></div></div>
+{% for m in machines %}
+<section class="card machine-card">
+  <div class="section-head"><div><h2>{{ m.name }}</h2><p class="muted">Horímetro: {{ '%.1f'|format(m.hourmeter) }} h · Próxima revisão: {{ '%.1f'|format(m.next_service_at) }} h</p></div><span class="badge {{ m.service_status }}">{% if m.service_status=='urgent' %}Vencida{% elif m.service_status=='warning' %}Até 50 h{% else %}Normal{% endif %}</span></div>
+  {% set horas_usadas = m.hourmeter - m.last_service_hour %}
+  {% if m.service_interval and m.service_interval > 0 %}
+    {% set progresso = (horas_usadas / m.service_interval * 100) %}
+  {% else %}
+    {% set progresso = 0 %}
+  {% endif %}
+  {% if progresso < 0 %}{% set progresso = 0 %}{% elif progresso > 100 %}{% set progresso = 100 %}{% endif %}
+  <div class="service-progress">
+    <div class="progress-header"><span>Progresso até a próxima revisão</span><strong>{{ '%.0f'|format(progresso) }}%</strong></div>
+    <div class="progress"><span style="width: {{ progresso }}%;"></span></div>
+    <div class="progress-details"><span>{{ '%.1f'|format(horas_usadas) }} h utilizadas</span><span>{{ '%.1f'|format(m.hours_to_service) }} h restantes</span></div>
+  </div>
+  <div class="checklist">{% for c in m.checklists %}<form method="post" action="{{ url_for('toggle_checklist', checklist_id=c.id) }}"><button class="check {% if c.completed %}done{% endif %}">{{ '✓' if c.completed else '○' }}</button><span>{{ c.task }}</span><small>{{ c.interval }} h</small></form>{% endfor %}</div>
+  {% if current_user.perfil in ['admin','supervisor'] %}<form method="post" action="{{ url_for('complete_service', machine_id=m.id) }}"><button class="btn primary" onclick="return confirm('Registrar a revisão desta máquina?')">Registrar revisão concluída</button></form>{% endif %}
+</section>
+{% else %}<section class="card"><p>Nenhuma máquina cadastrada.</p></section>{% endfor %}
+{% endblock %}

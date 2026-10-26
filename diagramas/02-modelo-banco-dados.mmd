@@ -1,0 +1,48 @@
+erDiagram
+    USER ||--o{ REGISTRO_HORA : registra
+    USER ||--o{ REGISTRO_COMBUSTIVEL : registra
+    MACHINE ||--o{ REGISTRO_HORA : recebe
+    MACHINE ||--o{ REGISTRO_COMBUSTIVEL : recebe
+    MACHINE ||--o{ MAINTENANCE_CHECKLIST : possui
+
+    USER {
+        int id PK
+        string nome
+        string email UK
+        string senha
+        string perfil
+    }
+    MACHINE {
+        int id PK
+        string name
+        string notes
+        float hourmeter
+        float last_service_hour
+        float service_interval
+        float next_service_at
+    }
+    REGISTRO_HORA {
+        int id PK
+        int machine_id FK
+        int user_id FK
+        date data
+        float horas
+        text descricao
+    }
+    REGISTRO_COMBUSTIVEL {
+        int id PK
+        int machine_id FK
+        int user_id FK
+        date data
+        float litros
+        float horas_trabalhadas
+        float valor_litro
+        float valor_total
+    }
+    MAINTENANCE_CHECKLIST {
+        int id PK
+        int machine_id FK
+        string task
+        int interval
+        boolean completed
+    }
